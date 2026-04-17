@@ -84,9 +84,18 @@ const JSONBIN_BIN_ID = "69e1cc15aaba8821970acc0d";
 const SCORE_COLORS = ["#E24B4A","#EF9F27","#888780","#1D9E75","#0F6E56"];
 let chartInstances = {}, cachedState = null;
 
-function csat(data,key){if(!data.length||!key)return 0;return Math.round(data.filter(r=>Number(r[key])>=4).length/data.length*100);}
-function avg(data,key){const v=data.map(r=>Number(r[key])).filter(v=>!isNaN(v)&&v>0);if(!v.length)return"—";return(v.reduce((s,x)=>s+x,0)/v.length).toFixed(1);}
-function dist(data,key){return[1,2,3,4,5].map(s=>data.filter(r=>Number(r[key])===s).length);}
+function scoreText(val){
+  const v=String(val||"").toLowerCase().trim();
+  if(v==="extremely satisfied"||v==="very satisfied")return 5;
+  if(v==="satisfied"||v==="somewhat satisfied")return 4;
+  if(v==="neutral")return 3;
+  if(v==="somewhat dissatisfied"||v==="dissatisfied")return 2;
+  if(v==="extremely dissatisfied"||v==="very dissatisfied")return 1;
+  const n=Number(val);if(!isNaN(n)&&n>=1&&n<=5)return n;return null;
+}
+function csat(data,key){if(!data.length||!key)return 0;return Math.round(data.filter(r=>(scoreText(r[key])||0)>=4).length/data.length*100);}
+function avg(data,key){const v=data.map(r=>scoreText(r[key])).filter(v=>v!==null);if(!v.length)return"—";return(v.reduce((s,x)=>s+x,0)/v.length).toFixed(1);}
+function dist(data,key){return[1,2,3,4,5].map(s=>data.filter(r=>scoreText(r[key])===s).length);}
 function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];}}
 function makeChart(id,data){
   destroyChart(id);const el=document.getElementById(id);if(!el)return;

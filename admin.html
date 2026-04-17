@@ -104,7 +104,7 @@
 </div>
 
 <script>
-const ADMIN_PASSWORD = "admin";
+const ADMIN_PASSWORD = "ADMIN_PASSWORD_PLACEHOLDER";
 let intData=null, extData=null, detectedQs=[], detectedOpenKey="";
 
 document.getElementById("login-btn").addEventListener("click",()=>{
@@ -137,14 +137,28 @@ function parseExcel(file){
     r.readAsArrayBuffer(file);
   });
 }
+const SKIP_COLS=["id","start time","completion time","email","name","last modified time"];
+function scoreText(val){
+  const v=String(val||"").toLowerCase().trim();
+  if(v==="extremely satisfied"||v==="very satisfied")return 5;
+  if(v==="satisfied"||v==="somewhat satisfied")return 4;
+  if(v==="neutral")return 3;
+  if(v==="somewhat dissatisfied"||v==="dissatisfied")return 2;
+  if(v==="extremely dissatisfied"||v==="very dissatisfied")return 1;
+  const n=Number(val);if(!isNaN(n)&&n>=1&&n<=5)return n;return null;
+}
 function detectCols(rows){
   if(!rows.length)return{qs:[],openKey:""};
   const headers=Object.keys(rows[0]),qs=[],opens=[];
   headers.forEach(h=>{
+    if(SKIP_COLS.includes(h.toLowerCase().trim()))return;
     const vals=rows.map(r=>r[h]).filter(v=>v!=null&&v!=="");
-    const nums=vals.map(Number).filter(v=>!isNaN(v));
-    if(nums.length>=vals.length*0.7&&nums.every(v=>v>=1&&v<=5)&&nums.length>0)qs.push({key:h,label:h.length>50?h.substring(0,50)+"…":h});
-    else if(vals.some(v=>String(v).length>5))opens.push(h);
+    if(!vals.length)return;
+    const scored=vals.map(scoreText).filter(v=>v!==null);
+    const isLikert=scored.length>=vals.length*0.5;
+    const isNumeric=vals.map(Number).filter(v=>!isNaN(v)&&v>=1&&v<=5).length>=vals.length*0.7;
+    if(isLikert||isNumeric)qs.push({key:h,label:h.length>60?h.substring(0,60)+"…":h});
+    else if(vals.some(v=>String(v).length>8))opens.push(h);
   });
   return{qs,openKey:opens[opens.length-1]||""};
 }
