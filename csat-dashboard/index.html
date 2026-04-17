@@ -9,11 +9,15 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "FIREBASE_API_KEY",
-    authDomain: "FIREBASE_AUTH_DOMAIN",
-    projectId: "FIREBASE_PROJECT_ID",
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBbk7Sw5CHnL83kQ8-_H4bVruST_FzwqGM",
+  authDomain: "csat-7e0f1.firebaseapp.com",
+  projectId: "csat-7e0f1",
+  storageBucket: "csat-7e0f1.firebasestorage.app",
+  messagingSenderId: "854625616298",
+  appId: "1:854625616298:web:5a02c7278412116f096bd3"
+};
+
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
