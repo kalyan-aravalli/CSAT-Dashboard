@@ -104,7 +104,7 @@
 </div>
 
 <script>
-const ADMIN_PASSWORD = "password";
+const ADMIN_PASSWORD = "ADMIN_PASSWORD_PLACEHOLDER";
 let intData=null, extData=null, detectedQs=[], detectedOpenKey="";
 
 document.getElementById("login-btn").addEventListener("click",()=>{
@@ -141,8 +141,8 @@ const SKIP_COLS=["id","start time","completion time","email","name","last modifi
 function scoreText(val){
   const v=String(val||"").toLowerCase().trim();
   if(v==="extremely satisfied"||v==="very satisfied")return 5;
-  if(v==="satisfied"||v==="somewhat satisfied")return 4;
-  if(v==="neutral")return 3;
+  if(v==="satisfied")return 4;
+  if(v==="somewhat satisfied"||v==="neutral")return 3;
   if(v==="somewhat dissatisfied"||v==="dissatisfied")return 2;
   if(v==="extremely dissatisfied"||v==="very dissatisfied")return 1;
   const n=Number(val);if(!isNaN(n)&&n>=1&&n<=5)return n;return null;
